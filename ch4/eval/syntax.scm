@@ -85,11 +85,6 @@
   (cdr exp))
 
 
-; (scope)
-(define (scope? exp)
-  (tagged-list? exp 'scope))
-
-
 ; (<operator> <operands>...)
 (define (application? exp)
   (pair? exp))
