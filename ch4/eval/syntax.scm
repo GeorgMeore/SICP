@@ -94,3 +94,12 @@
 
 (define (operands exp)
   (cdr exp))
+
+
+; (let ((<var1> <exp1>) ... (<varn> <expn>)) <body>)
+(define (let? exp)
+  (tagged-list? exp 'let))
+
+(define (let-expression exp)
+  (cons (make-lambda (map car (cadr exp)) (cddr exp))
+        (map cadr (cadr exp))))

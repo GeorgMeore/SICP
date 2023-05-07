@@ -19,6 +19,8 @@
           (eval-lambda exp env))
         ((begin? exp)
           (eval-sequence (begin-actions exp) env))
+        ((let? exp)
+          (eval (let-expression exp) env))
         ((application? exp)
           (eval-application exp env))
         (else
