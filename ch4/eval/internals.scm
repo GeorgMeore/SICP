@@ -10,11 +10,9 @@
 
 
 ; procedures
-(define scheme-apply apply) ; builtin scheme apply will be overwritten
-
 (define (wrap-boolean proc)
   (define (wrapped . args)
-    (if (scheme-apply proc args) 'true 'false))
+    (if (apply proc args) 'true 'false))
   wrapped)
 
 (define primitive-procedures
@@ -37,7 +35,7 @@
        primitive-procedures))
 
 (define (apply-primitive-procedure proc args)
-  (scheme-apply (cadr proc) args))
+  (apply (cadr proc) args))
 
 (define (primitive-procedure? proc)
   (tagged-list? proc 'primitive))
