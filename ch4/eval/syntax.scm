@@ -33,7 +33,7 @@
   (cons 'lambda (cons parameters body)))
 
 
-; (set! <var> <value>
+; (set! <var> <value>)
 (define (assignment? exp)
   (tagged-list? exp 'set!))
 
