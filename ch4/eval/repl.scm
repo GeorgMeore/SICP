@@ -8,9 +8,7 @@
 (define (display-object object)
   (if (compound-procedure? object)
       (display (list 'procedure
-                      (procedure-parameters object)
-                      (procedure-body object)
-                      '<env>))
+                     (procedure-parameters object)))
       (display object)))
 
 (define (repl)
