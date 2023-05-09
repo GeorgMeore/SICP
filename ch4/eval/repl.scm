@@ -17,7 +17,7 @@
   (display "> ")
   (let ((input (read)))
   	(if (not (eq? input #!eof))
-  	    (let ((output (eval input the-global-environment)))
+  	    (let ((output (evaluate input the-global-environment)))
   	      (display-object output)
   	      (newline)
   	      (repl)))))
