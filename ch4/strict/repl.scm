@@ -1,6 +1,6 @@
 #!/usr/bin/csi -s
 
-(load "eval")
+(load "evaluator")
 
 
 (define the-global-environment (setup-environment))
