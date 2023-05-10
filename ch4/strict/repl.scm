@@ -12,7 +12,7 @@
       (display object)))
 
 (define (repl)
-  (display "> ")
+  (display "strict> ")
   (let ((input (read)))
     (if (not (eq? input #!eof))
         (let ((output (evaluate input the-global-environment)))
