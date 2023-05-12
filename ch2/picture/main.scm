@@ -6,22 +6,6 @@
 (load "painters")
 (load "utils")
 
-(define (paint . painters)
-	(define main-frame
-		(make-frame
-			(make-vect 0 0)
-			(make-vect 6 0)
-			(make-vect 0 6)
-		)
-	)
-	(define (do-paint painter)
-		(start-image)
-		(painter main-frame)
-		(end-image)
-	)
-	(for-each do-paint painters)
-)
-
 (define (tile n)
 	(overlay
 		((square-of-four flip-horiz flip-diag identity flip-vert)
@@ -61,11 +45,24 @@
 	)
 )
 
-(paint
-	(overlay
-		(stuff cross 10 15)
-		(stuff cross -10 15)
-	)
-	(tile 8)
-	(n-by-m (tile 5) 5 5)
+
+(define the-painter
+	;(overlay
+	;	(stuff cross 10 15)
+	;	(stuff cross -10 15)
+	;)
+	;(tile 7)
+	(n-by-m (tile 4) 5 5)
 )
+
+(define the-frame
+	(make-frame
+		(make-vect 0 0)
+		(make-vect 1 0)
+		(make-vect 0 1)
+	)
+)
+
+(start-image)
+(the-painter the-frame)
+(end-image)
