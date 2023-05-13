@@ -82,11 +82,12 @@
 
 (define (analyze-application exp)
   (let ((function-executor (analyze (operator exp)))
-        (argument-executor (map analyze (operands exp))))
+        (argument-executors (map analyze (operands exp))))
     (lambda (env)
-      (execute-application (function-executor env)
-                           (map (lambda (evaluator) (evaluator env))
-                                argument-executor)))))
+      (execute-application
+        (function-executor env)
+        (map (lambda (exec) (exec env))
+             argument-executors)))))
 
 (define (execute-application proc args)
   (cond ((primitive-procedure? proc)
