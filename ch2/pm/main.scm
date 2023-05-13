@@ -40,25 +40,16 @@
 (define simplify (make-simplifier rules))
 
 (define (enc n)
-  (cond
-    ((= n 0) '())
-    ((> n 0) (list 1 (enc (- n 1))))
-    ((< n 0) (list (enc (+ n 1)) 1))
-  )
-)
+  (cond ((= n 0) '())
+        ((> n 0) (list 1 (enc (- n 1))))
+        ((< n 0) (list (enc (+ n 1)) 1))))
 
 (define (dec l)
-  (cond
-    ((null? l) 0)
-    ((number? (car l)) (+ 1 (dec (cadr l))))
-    ((number? (cadr l)) (- (dec (car l)) 1))
-  )
-)
+  (cond ((null? l) 0)
+        ((number? (car l)) (+ 1 (dec (cadr l))))
+        ((number? (cadr l)) (- (dec (car l)) 1))))
 
 (define program
-  (list 'fact (enc 4))
-)
+  (list 'fact (enc 4)))
 
-(print
-  (dec (simplify program))
-)
+(print (dec (simplify program)))

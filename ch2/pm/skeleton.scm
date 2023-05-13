@@ -1,7 +1,5 @@
 (define (skeleton-evaluation? skel)
-  (and (pair? skel) (eq? (car skel) ':))
-)
+  (and (pair? skel) (eq? (car skel) ':)))
 
 (define (skeleton-expression skel)
-  (cadr skel)
-)
+  (cadr skel))
