@@ -40,8 +40,8 @@
 (define (primitive-procedure? proc)
   (tagged-list? proc 'primitive))
 
-(define (make-procedure params body env)
-  (list 'procedure params body env))
+(define (make-procedure params executor env)
+  (list 'procedure params executor env))
 
 (define (compound-procedure? proc)
   (tagged-list? proc 'procedure))
@@ -49,7 +49,7 @@
 (define (procedure-parameters proc)
   (cadr proc))
 
-(define (procedure-body proc)
+(define (procedure-executor proc)
   (caddr proc))
 
 (define (procedure-environment proc)

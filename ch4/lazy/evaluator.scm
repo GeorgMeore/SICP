@@ -93,7 +93,7 @@
   (cond ((primitive-procedure? proc)
           (apply-primitive-procedure proc (map force-it args)))
         ((compound-procedure? proc)
-          ((procedure-body proc)
+          ((procedure-executor proc)
             (extend-environment
               (procedure-parameters proc)
               args
