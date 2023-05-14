@@ -159,8 +159,9 @@
 
 (define (force-it object)
   (when (thunk? object)
-    (set-cdr! object ((thunk-executor object) (thunk-env object)))
+    (set-cdr! object (force-it ((thunk-executor object)
+                                (thunk-env object))))
     (set-car! object 'evaluated-thunk))
   (if (evaluated-thunk? object)
-      (force-it (thunk-value object))
+      (thunk-value object)
       object))
