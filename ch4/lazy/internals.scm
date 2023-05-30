@@ -66,8 +66,8 @@
           (error "Too few arguments supplied" vars vals))))
 
 (define (add-binding! var val frame)
-    (set-cdr! frame (cons (car frame) (cdr frame)))
-    (set-car! frame (cons var val)))
+  (set-cdr! frame (cons (car frame) (cdr frame)))
+  (set-car! frame (cons var val)))
 
 (define (get-binding var frame)
   (cond ((null? frame)
