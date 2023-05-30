@@ -58,12 +58,15 @@
 
 ; frames
 (define (make-frame vars vals)
-  (cond ((= (length vars) (length vals))
-          (zip vars vals))
-        ((< (length vars) (length vals))
+  (cond ((and (null? vars) (null? vals))
+          '((* *))) ; empty frame
+        ((null? vars)
           (error "Too many arguments supplied" vars vals))
+        ((null? vals)
+          (error "Too few arguments supplied" vars vals))
         (else
-          (error "Too few arguments supplied" vars vals))))
+          (cons (cons (car vars) (car vals))
+                (make-frame (cdr vars) (cdr vals))))))
 
 (define (add-binding! var val frame)
   (set-cdr! frame (cons (car frame) (cdr frame)))
