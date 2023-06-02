@@ -25,7 +25,9 @@
         (cons 'cdr cdr)
         (cons 'cons cons)
         (cons 'null? (wrap-boolean null?))
-        (cons 'eq? (wrap-boolean eq?))))
+        (cons 'eq? (wrap-boolean eq?))
+        (cons 'list list)
+  ))
 
 (define (primitive-procedure-names)
   (map car primitive-procedures))
