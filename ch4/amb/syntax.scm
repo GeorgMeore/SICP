@@ -87,6 +87,16 @@
       'false
       (cadddr exp)))
 
+; (try <first> <second>)
+(define (try? exp)
+  (tagged-list? exp 'try))
+
+(define (try-first exp)
+  (cadr exp))
+
+(define (try-second exp)
+  (caddr exp))
+
 
 ; (begin <actions>...)
 (define (begin? exp)

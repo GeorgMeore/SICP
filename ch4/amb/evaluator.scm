@@ -19,6 +19,8 @@
           (analyze-definition exp))
         ((if? exp)
           (analyze-if exp))
+        ((try? exp)
+          (analyze-try exp))
         ((amb? exp)
           (analyze-amb exp))
         ((lambda? exp)
@@ -101,6 +103,15 @@
               (consequent-executor env succeed pred-fail)
               (alternative-executor env succeed pred-fail)))
         fail))))
+
+(define (analyze-try exp)
+  (let ((first-executor (analyze (try-first exp)))
+        (second-executor (analyze (try-second exp))))
+    (lambda (env succeed fail)
+      (first-executor env
+        succeed
+        (lambda ()
+          (second-executor env succeed fail))))))
 
 (define (analyze-amb exp)
   (define (try-choices choices env succeed fail)
