@@ -44,6 +44,17 @@
   (caddr exp))
 
 
+; (set!! <var> <value>)
+(define (permanent-assignment? exp)
+  (tagged-list? exp 'set!!))
+
+(define (permanent-assignment-variable exp)
+  (cadr exp))
+
+(define (permanent-assignment-value exp)
+  (caddr exp))
+
+
 ; (def <var> <value>)
 ; (def (<var> <params>...) <body>)
 (define (definition? exp)

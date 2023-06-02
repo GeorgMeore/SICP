@@ -13,6 +13,8 @@
           (analyze-quoted exp))
         ((assignment? exp)
           (analyze-assignment exp))
+        ((permanent-assignment? exp)
+          (analyze-permanent-assignment exp))
         ((definition? exp)
           (analyze-definition exp))
         ((if? exp)
@@ -55,6 +57,16 @@
               (lambda ()
                 (set-variable-value! name old-value env)
                 (value-fail)))))
+        fail))))
+
+(define (analyze-permanent-assignment exp)
+  (let ((name (permanent-assignment-variable exp))
+        (executor (analyze (permanent-assignment-value exp))))
+    (lambda (env succeed fail)
+      (executor env
+        (lambda (value value-fail)
+          (set-variable-value! name value env)
+          (succeed value value-fail))
         fail))))
 
 (define (analyze-definition exp)
