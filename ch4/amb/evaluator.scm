@@ -23,6 +23,8 @@
           (analyze-try exp))
         ((amb? exp)
           (analyze-amb exp))
+        ((require? exp)
+          (analyze-require exp))
         ((lambda? exp)
           (analyze-lambda exp))
         ((begin? exp)
@@ -125,6 +127,16 @@
   (let ((executors (map analyze (amb-choices exp))))
     (lambda (env succeed fail)
       (try-choices executors env succeed fail))))
+
+(define (analyze-require exp)
+  (let ((predicate-executor (analyze (require-predicate exp))))
+    (lambda (env succeed fail)
+      (predicate-executor env
+        (lambda (pred-value pred-fail)
+          (if (true? pred-value)
+              (succeed pred-value pred-fail)
+              (pred-fail)))
+        fail))))
 
 (define (analyze-lambda exp)
   (let ((params (lambda-parameters exp))
