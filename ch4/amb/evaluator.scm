@@ -106,14 +106,13 @@
               (alternative-executor env succeed pred-fail)))
         fail))))
 
-; This thing is equivalent to amb,
-; both of them can be expressed in terms of each other.
 (define (analyze-try exp)
   (let ((first-executor (analyze (try-first exp)))
         (second-executor (analyze (try-second exp))))
     (lambda (env succeed fail)
       (first-executor env
-        succeed
+        (lambda (first-value first-fail)
+          (succeed first-value fail))
         (lambda ()
           (second-executor env succeed fail))))))
 
