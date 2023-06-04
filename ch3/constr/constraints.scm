@@ -2,6 +2,7 @@
 
 (define (inform-about-value constraint)
   (constraint 'new-value))
+
 (define (inform-about-no-value constraint)
   (constraint 'lost-value))
 

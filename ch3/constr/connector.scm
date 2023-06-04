@@ -38,11 +38,15 @@
 
 (define (has-value? conn)
   (conn 'has-value?))
+
 (define (get-value conn)
   (conn 'get-value))
+
 (define (set-value! conn new-value informant)
   ((conn 'set-value!) new-value informant))
+
 (define (forget-value! conn retractor)
   ((conn 'forget-value!) retractor))
+
 (define (connect conn new-constraint)
   ((conn 'connect) new-constraint))

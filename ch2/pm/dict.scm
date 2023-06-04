@@ -4,10 +4,9 @@
   (cons (list key value) dict))
 
 (define (dict-has? key dict)
-  (and
-    (pair? dict)
-    (or (equal? (caar dict) key)
-        (dict-has? key (cdr dict)))))
+  (and (pair? dict)
+       (or (equal? (caar dict) key)
+           (dict-has? key (cdr dict)))))
 
 (define (dict-lookup key dict)
   (if (null? dict)
