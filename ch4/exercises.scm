@@ -31,3 +31,8 @@
       (let ((j (an-integer-between i k)))
         (require (= (+ (* i i) (* j j)) (* k k)))
         (list i j k)))))
+
+; ex 55
+(supervisor ?x (Ben Bitdiddle))
+(job ?x (accounting . ?y))
+(address ?x (Slumerville . ?y))
