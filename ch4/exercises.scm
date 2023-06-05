@@ -36,3 +36,13 @@
 (supervisor ?x (Ben Bitdiddle))
 (job ?x (accounting . ?y))
 (address ?x (Slumerville . ?y))
+
+; ex 56
+(and (supervisor ?x (Ben Bitdiddle))
+     (address ?x ?a))
+(and (salary (Ben Bitdiddle) ?x)
+     (salary ?p ?y)
+     (lisp-value > ?x ?y))
+(and (supervisor ?x ?y)
+     (not (job ?y (computer . ?j)))
+     (job ?y ?j))
