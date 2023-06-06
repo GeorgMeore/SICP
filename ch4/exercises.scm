@@ -6,7 +6,7 @@
 ; > w     ; prints 10
 ; > count ; prints 2
 ; When evaluating this definition, only the outer application is evaluated,
-; leading to the increment of the count.
+; leading to the increment of `count`.
 ; The inner application `(id 10)` is stored as a thunk.
 ; When we evaluate `w`, we force the thunk and `count` is once more incremented.
 
@@ -46,3 +46,40 @@
 (and (supervisor ?x ?y)
      (not (job ?y (computer . ?j)))
      (job ?y ?j))
+
+; ex 57
+(rule (can-replace ?p1 ?p2)
+  (and (not (same ?p1 ?p2))
+       (job ?p1 ?j1)
+       (job ?p2 ?j2)
+       (or (same ?j1 ?j2)
+           (can-do-job ?j1 ?j2))))
+
+(can-replace ?x (Cy D. Fect))
+(and (salary ?p1 ?x)
+     (salary ?p2 ?y)
+     (lisp-value > ?y ?x)
+     (can-replace ?p1 ?p2))
+
+; ex 58
+(rule (bigshot ?p ?d)
+  (and (job ?p (?d . ?x))
+       (or (not (supervisor ?p ?s))
+           (and (supervisor ?p ?s)
+                (not (job ?s (?d . ?y)))
+                (not (bigshot ?s ?d))))))
+
+; ex 59
+(meeting ?division (Friday ?time))
+
+(rule (meeting-time ?person ?day-and-time)
+  (or (meeting whole-company ?day-and-time)
+      (and (job ?person (?division . ?title))
+           (meeting ?division ?day-and-time))))
+
+(meeting-time (Hacker Alyssa P) (Wednesday ?time))
+
+; ex 60
+; `lives-near` is commutative: if `(lives-near x y)` is true then
+; `(lives-near y x)` must also be true.
+; That's why when both arguments are unbound we will get both solutions.
