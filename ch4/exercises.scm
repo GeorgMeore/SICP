@@ -49,11 +49,11 @@
 
 ; ex 57
 (rule (can-replace ?p1 ?p2)
-  (and (not (same ?p1 ?p2))
-       (job ?p1 ?j1)
+  (and (job ?p1 ?j1)
        (job ?p2 ?j2)
        (or (same ?j1 ?j2)
-           (can-do-job ?j1 ?j2))))
+           (can-do-job ?j1 ?j2)
+       (not (same ?p1 ?p2)))))
 
 (can-replace ?x (Cy D. Fect))
 (and (salary ?p1 ?x)
