@@ -14,7 +14,7 @@
 (define (repl)
   (display "lazy> ")
   (let ((input (read)))
-    (if (not (eq? input #!eof))
+    (if (not (eof-object? input))
         (let ((output (force-it (evaluate input the-global-environment))))
           (display-object output)
           (newline)

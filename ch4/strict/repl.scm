@@ -14,7 +14,7 @@
 (define (repl)
   (display "strict> ")
   (let ((input (read)))
-    (if (not (eq? input #!eof))
+    (if (not (eof-object? input))
         (let ((output (evaluate input the-global-environment)))
           (display-object output)
           (newline)

@@ -17,9 +17,7 @@
     (let ((input (read)))
       (cond ((eq? input 'retry)
               (retry))
-            ((eq? input #!eof)
-              'done)
-            (else
+            ((not (eof-object? input))
               (evaluate
                 input
                 the-global-environment
