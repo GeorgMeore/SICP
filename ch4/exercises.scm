@@ -44,7 +44,7 @@
      (salary ?p ?y)
      (lisp-value > ?x ?y))
 (and (supervisor ?x ?y)
-     (not (job ?y (computer . ?j)))
+     (not (job ?y (computer . ?r)))
      (job ?y ?j))
 
 ; ex 57
