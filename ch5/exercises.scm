@@ -56,3 +56,45 @@
     (assign g (op /) (reg t) (const 2))
     (goto (label loop))
   done)
+
+; ex 4
+(controller
+    (assign continue (label exit))
+  expt
+    (test (op =) (reg n) (const 0))
+    (branch (label expt-base-case))
+    (save continue)
+    (assign continue (label expt-after-rec-call))
+    (assign n (op -) (reg n) (const 1))
+    (goto (label expt))
+  expt-after-rec-call
+    (restore continue)
+    (assign val (op *) (reg b) (reg val))
+    (goto (reg continue))
+  expt-base-case
+    (assign val (const 1))
+    (goto (reg continue))
+  exit)
+
+(controller
+    (assign continue (label exit))
+  expt-iter
+    (assign val (const 1))
+  expt-iter-loop
+    (test (op =) (reg n) (const 0))
+    (branch (label expt-iter-done))
+    (assign val (op *) (reg val) (reg b))
+    (assign n (op -) (reg n) (const 1))
+    (goto (label expt-iter-loop))
+  expt-iter-done
+    (goto (reg continue))
+  exit)
+
+; ex 6
+; There is a redundant restore/save on the `continue` register
+;   ...
+;   (restore continue)
+;   ;; set up to compute Fib(n − 2)
+;   (assign n (op -) (reg n) (const 2))
+;   (save continue)
+;   ...
