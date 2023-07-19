@@ -1,10 +1,12 @@
 #!/usr/bin/csi -s
 
-(load "vect")
-(load "frame")
-(load "transformers")
-(load "painters")
-(load "utils")
+(include "utils.scm")
+(include "vect.scm")
+(include "segment.scm")
+(include "draw.scm")
+(include "frame.scm")
+(include "transformers.scm")
+(include "painters.scm")
 
 (define (tile n)
   (overlay ((square-of-four flip-horiz flip-diag identity flip-vert)
@@ -32,9 +34,9 @@
 
 
 (define the-painter
-  ;(overlay (stuff cross 10 15)
-  ;         (stuff cross -10 15))
-  (tile 7)
+  (overlay (stuff cross 10 15)
+           (stuff cross -10 15))
+  ;(tile 7)
   ;(n-by-m (tile 4) 5 5)
 )
 
