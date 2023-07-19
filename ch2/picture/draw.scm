@@ -1,5 +1,3 @@
-(load "vect")
-
 (define (start-image)
   (display "%!PS-Adobe-3.0 EPSF-3.0\n")
   (display "%%BoundingBox: 0 0 400 400\n")

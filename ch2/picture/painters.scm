@@ -1,8 +1,3 @@
-(load "segment")
-(load "vect")
-(load "utils")
-(load "draw")
-
 (define blank
   (lambda (frame) 'blank))
 

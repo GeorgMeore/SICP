@@ -1,5 +1,3 @@
-(load "vect")
-
 (define (make-segment start end)
   (cons start end))
 
