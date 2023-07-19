@@ -43,21 +43,22 @@
   (stack 'reset))
 
 
-(define (create-machine)
+(define (make-empty-machine)
   (let ((pc (make-register 'pc))
         (flag (make-register 'flag))
         (stack (make-stack))
-        (text '()))
+        (text '*notext*))
     (let ((ops-table (list (cons 'reset-stack (lambda () (reset stack)))))
           (reg-table (list (cons 'pc pc)
                            (cons 'flag flag))))
       (define (get-register name)
         (let ((val (assoc name reg-table)))
-          (if val
-              (cdr val)
-              (let ((reg (make-register name)))
-                (set! reg-table (cons (cons name reg) reg-table))
-                reg))))
+          (cond (val (cdr val))
+                ((eq? text '*notext*) ; assembling is in process
+                  (let ((reg (make-register name)))
+                    (set! reg-table (cons (cons name reg) reg-table))
+                    reg))
+                (else (error "Unknown register" name)))))
       (define (execute)
         (let ((insts (get-contents pc)))
           (cond ((null? insts)
@@ -82,7 +83,7 @@
       dispatch)))
 
 (define (make-machine ops text)
-  (let ((machine (create-machine)))
+  (let ((machine (make-empty-machine)))
     ((machine 'install-operations) ops)
     ((machine 'install-instructions)
       (assemble text machine))
