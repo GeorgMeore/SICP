@@ -6,7 +6,6 @@
 
 (define fact
   (make-machine
-    '(val n)
     (list (cons '- -) (cons '* *) (cons '= =))
     '(start
         (assign val (const 1))

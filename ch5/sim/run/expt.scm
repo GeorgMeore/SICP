@@ -6,7 +6,6 @@
 
 (define expt
   (make-machine
-    '(n b val continue)
     (list (cons '- -) (cons '* *) (cons '= =))
     '(controller
         (assign continue (label exit))
