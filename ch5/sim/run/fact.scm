@@ -1,8 +1,8 @@
 #!/usr/bin/csi -s
 
 (include "syntax.scm")
-(include "machine.scm")
 (include "assembler.scm")
+(include "machine.scm")
 
 (define fact
   (make-machine

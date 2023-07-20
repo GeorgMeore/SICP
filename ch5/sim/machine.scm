@@ -69,6 +69,7 @@
         (flag (make-register 'flag))
         (stack (make-stack))
         (text '*notext*)
+        (labels '*nolabels*)
         (trace #f))
     (let ((ops-table (list (cons 'stack-reset (lambda () (stack 'reset)))
                            (cons 'stack-stat (lambda () (stack 'stat)))))
@@ -82,21 +83,34 @@
                     (set! reg-table (cons (cons name reg) reg-table))
                     reg))
                 (else (error "Unknown register" name)))))
+      (define (execute-one inst)
+        (when trace
+          (println (instruction-text inst)))
+        ((instruction-executor inst)))
       (define (execute)
         (let ((insts (get-contents pc)))
-          (cond ((null? insts)
-                  'done)
+          (cond ((null? insts) 'done)
+                ((instruction-break (car insts)) 'break)
                 (else
-                  (when trace
-                    (println (instruction-text (car insts))))
-                  ((instruction-executor (car insts)))
+                  (execute-one (car insts))
                   (execute)))))
+      (define (continue)
+        (execute-one (car (get-contents pc)))
+                (execute))
+      (define (get-instruction label-name n)
+        (let ((label (assoc label-name labels)))
+          (if label
+              (or (assoc (+ (label-number label) n) text)
+                  (error "Invalid instruction location"))
+              (error "Undefined label" label-name))))
       (define (dispatch message)
         (cond ((eq? message 'start)
                 (set-contents! pc text)
                 (execute))
               ((eq? message 'install-instructions)
-                (lambda (insts) (set! text insts)))
+                (lambda (ists labs)
+                  (set! text ists)
+                  (set! labels labs)))
               ((eq? message 'get-register)
                 get-register)
               ((eq? message 'install-operations)
@@ -105,6 +119,19 @@
               ((eq? message 'operations) ops-table)
               ((eq? message 'set-trace)
                 (lambda (value) (set! trace value)))
+              ((eq? message 'add-break)
+                (lambda (label-name n)
+                  (set-instruction-break! (get-instruction label-name n) #t)))
+              ((eq? message 'remove-break)
+                (lambda (label-name n)
+                  (set-instruction-break! (get-instruction label-name n) #f)))
+              ((eq? message 'remove-all-breaks)
+                (for-each
+                  (lambda (inst) (set-instruction-break! inst #f))
+                  text))
+              ((eq? message 'proceed)
+                (execute-one (car (get-contents pc)))
+                (execute))
               (else
                 (error "Invalid machine operation" message))))
       dispatch)))
@@ -112,12 +139,16 @@
 (define (make-machine ops text)
   (let ((machine (make-empty-machine)))
     ((machine 'install-operations) ops)
-    ((machine 'install-instructions)
-      (assemble text machine))
+    (assemble text
+              machine
+              (machine 'install-instructions))
     machine))
 
 (define (start machine)
   (machine 'start))
+
+(define (proceed machine)
+  (machine 'proceed))
 
 (define (get-register machine name)
   ((machine 'get-register) name))
@@ -139,3 +170,12 @@
 
 (define (disable-register-tracing machine name)
   (set-trace! (get-register machine name) #f))
+
+(define (set-breakpoint machine label n)
+  ((machine 'add-break) label n))
+
+(define (cancel-breakpoint machine label n)
+  ((machine 'remove-break) label n))
+
+(define (cancel-all-breakpoints machine)
+  (machine 'remove-all-breaks))
