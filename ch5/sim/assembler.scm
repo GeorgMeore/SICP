@@ -1,22 +1,26 @@
-(define (assemble text machine)
+(define (assemble text machine receive)
   (extract-labels
     text
     (lambda (insts labels)
       (update-insts! insts labels machine)
-      insts)))
+      (receive insts labels))))
 
 (define (extract-labels text receive)
-  (if (null? text)
-      (receive '() '())
-      (extract-labels
-        (cdr text)
-        (lambda (insts labels)
-          (let ((next (car text)))
-            (if (symbol? next)
-                (if (assoc next labels)
-                    (error "Duplicate label" next)
-                    (receive insts (cons (make-label next insts) labels)))
-                (receive (cons (make-instruction next) insts) labels)))))))
+  (define (go-over-text text inst-number receive)
+    (if (null? text)
+        (receive '() '())
+        (if (symbol? (car text))
+            (go-over-text (cdr text) inst-number
+              (lambda (insts labels)
+                (receive
+                  insts
+                  (cons (make-label (car text) insts inst-number) labels))))
+            (go-over-text (cdr text) (+ inst-number 1)
+              (lambda (insts labels)
+                (receive
+                  (cons (make-instruction (car text) inst-number) insts)
+                  labels))))))
+  (go-over-text text 0 receive))
 
 (define (update-insts! insts labels machine)
   (let ((pc (get-register machine 'pc))
@@ -32,26 +36,43 @@
             labels machine pc flag stack ops)))
       insts)))
 
-(define (make-instruction text)
-  (cons text '*noexec*))
 
-(define (instruction-text inst)
+(define (make-instruction text number)
+  (list number text '*noexec* #f))
+
+(define (instruction-number inst)
   (car inst))
 
+(define (instruction-text inst)
+  (cadr inst))
+
 (define (instruction-executor inst)
-  (cdr inst))
+  (caddr inst))
+
+(define (instruction-break inst)
+  (cadddr inst))
 
 (define (set-instruction-executor! inst proc)
-  (set-cdr! inst proc))
+  (set-car! (cddr inst) proc))
 
-(define (make-label name insts)
-  (cons name insts))
+(define (set-instruction-break! inst val)
+  (set-car! (cdddr inst) val))
+
+
+(define (make-label name insts number)
+  (list name number insts))
+
+(define (label-number label)
+  (cadr label))
+
+(define (label-insts label)
+  (caddr label))
 
 
 (define (lookup-label labels name)
   (let ((val (assoc name labels)))
     (if val
-        (cdr val)
+        (label-insts val)
         (error "Undefined label" name))))
 
 (define (lookup-op ops name)
