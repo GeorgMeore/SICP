@@ -136,6 +136,16 @@
       (set-contents! dst (pop stack))
       (advance-pc pc))))
 
+(define (make-perform inst machine labels ops pc)
+  (let ((action (perform-action inst)))
+    (let ((action-proc
+           (if (operation? action)
+               (make-operation action machine labels ops)
+               (error "Operation expected" inst))))
+      (lambda ()
+        (action-proc)
+        (advance-pc pc)))))
+
 (define (make-primitive exp machine labels)
   (cond ((constant? exp)
           (let ((c (constant-value exp)))
