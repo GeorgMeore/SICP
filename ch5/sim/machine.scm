@@ -1,9 +1,19 @@
+(define (println . values)
+  (for-each display values)
+  (newline))
+
 (define (make-register name)
-  (let ((contents '*unassigned*))
+  (let ((contents '*unassigned*)
+        (trace #f))
     (define (dispatch message)
       (cond ((eq? message 'get) contents)
+            ((eq? message 'set-trace)
+              (lambda (value) (set! trace value)))
             ((eq? message 'set)
-              (lambda (value) (set! contents value)))
+              (lambda (value)
+                (when trace
+                  (println "register: " name " " contents " " value))
+                (set! contents value)))
             (else
               (error "Invalid register operation" message))))
     dispatch))
@@ -14,21 +24,35 @@
 (define (set-contents! register value)
   ((register 'set) value))
 
+(define (set-trace! register value)
+  ((register 'set-trace) value))
+
 
 (define (make-stack)
-  (let ((s '()))
-    (define (push x) (set! s (cons x s)))
+  (let ((stack '())
+        (pushes 0)
+        (depth 0)
+        (max-depth 0))
+    (define (push x)
+      (set! depth (+ depth 1))
+      (set! pushes (+ pushes 1))
+      (set! max-depth (max depth max-depth))
+      (set! stack (cons x stack)))
     (define (pop)
-      (if (null? s)
+      (if (null? stack)
           (error "Pop from empty stack")
-          (let ((top (car s)))
-            (set! s (cdr s))
+          (let ((top (car stack)))
+            (set! stack (cdr stack))
+            (set! depth (- depth 1))
             top)))
-    (define (reset) (set! s '()))
+    (define (reset) (set! stack '()))
+    (define (stat)
+      (println "stack: " pushes " " depth " " max-depth))
     (define (dispatch message)
       (cond ((eq? message 'push) push)
             ((eq? message 'pop) (pop))
             ((eq? message 'reset) (reset))
+            ((eq? message 'stat) (stat))
             (else
               (error "Invalid stack operation" message))))
     dispatch))
@@ -39,16 +63,15 @@
 (define (push stack value)
   ((stack 'push) value))
 
-(define (reset stack)
-  (stack 'reset))
-
 
 (define (make-empty-machine)
   (let ((pc (make-register 'pc))
         (flag (make-register 'flag))
         (stack (make-stack))
-        (text '*notext*))
-    (let ((ops-table (list (cons 'reset-stack (lambda () (reset stack)))))
+        (text '*notext*)
+        (trace #f))
+    (let ((ops-table (list (cons 'stack-reset (lambda () (stack 'reset)))
+                           (cons 'stack-stat (lambda () (stack 'stat)))))
           (reg-table (list (cons 'pc pc)
                            (cons 'flag flag))))
       (define (get-register name)
@@ -64,6 +87,8 @@
           (cond ((null? insts)
                   'done)
                 (else
+                  (when trace
+                    (println (instruction-text (car insts))))
                   ((instruction-executor (car insts)))
                   (execute)))))
       (define (dispatch message)
@@ -78,6 +103,8 @@
                 (lambda (ops) (set! ops-table (append ops-table ops))))
               ((eq? message 'stack) stack)
               ((eq? message 'operations) ops-table)
+              ((eq? message 'set-trace)
+                (lambda (value) (set! trace value)))
               (else
                 (error "Invalid machine operation" message))))
       dispatch)))
@@ -100,3 +127,15 @@
 
 (define (set-register-contents! machine name value)
   (set-contents! (get-register machine name) value))
+
+(define (enable-instruction-tracing machine)
+  ((machine 'set-trace) #t))
+
+(define (disable-instruction-tracing machine)
+  ((machine 'set-trace) #f))
+
+(define (enable-register-tracing machine name)
+  (set-trace! (get-register machine name) #t))
+
+(define (disable-register-tracing machine name)
+  (set-trace! (get-register machine name) #f))
