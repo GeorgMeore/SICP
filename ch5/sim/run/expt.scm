@@ -7,7 +7,7 @@
 (define expt
   (make-machine
     (list (cons '- -) (cons '* *) (cons '= =))
-    '(controller
+    '(start
         (assign continue (label exit))
       expt
         (test (op =) (reg n) (const 0))
