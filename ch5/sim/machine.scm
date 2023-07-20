@@ -64,7 +64,7 @@
   ((stack 'push) value))
 
 
-(define (make-empty-machine)
+(define (make-machine machine-operations program-text)
   (let ((pc (make-register 'pc))
         (flag (make-register 'flag))
         (stack (make-stack))
@@ -75,6 +75,11 @@
                            (cons 'stack-stat (lambda () (stack 'stat)))))
           (reg-table (list (cons 'pc pc)
                            (cons 'flag flag))))
+      (define (install-operations ops)
+        (set! ops-table (append ops-table ops)))
+      (define (install-instructions ists labs)
+        (set! text ists)
+        (set! labels labs))
       (define (get-register name)
         (let ((val (assoc name reg-table)))
           (cond (val (cdr val))
@@ -107,14 +112,8 @@
         (cond ((eq? message 'start)
                 (set-contents! pc text)
                 (execute))
-              ((eq? message 'install-instructions)
-                (lambda (ists labs)
-                  (set! text ists)
-                  (set! labels labs)))
               ((eq? message 'get-register)
                 get-register)
-              ((eq? message 'install-operations)
-                (lambda (ops) (set! ops-table (append ops-table ops))))
               ((eq? message 'stack) stack)
               ((eq? message 'operations) ops-table)
               ((eq? message 'set-trace)
@@ -134,15 +133,9 @@
                 (execute))
               (else
                 (error "Invalid machine operation" message))))
+      (install-operations machine-operations)
+      (assemble program-text dispatch install-instructions)
       dispatch)))
-
-(define (make-machine ops text)
-  (let ((machine (make-empty-machine)))
-    ((machine 'install-operations) ops)
-    (assemble text
-              machine
-              (machine 'install-instructions))
-    machine))
 
 (define (start machine)
   (machine 'start))
