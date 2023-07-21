@@ -1,6 +1,10 @@
 #!/usr/bin/csi -s
 
-(load "sim")
+(include "queue.scm")
+(include "wire.scm")
+(include "agenda.scm")
+(include "primitives.scm")
+(include "sim.scm")
 
 (define a (make-wire))
 (define b (make-wire))
