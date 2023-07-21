@@ -1,6 +1,9 @@
 #!/usr/bin/csi -s
 
-(load "evaluator.scm")
+(include "util.scm")
+(include "syntax.scm")
+(include "internals.scm")
+(include "evaluator.scm")
 
 
 (define the-global-environment (setup-environment))

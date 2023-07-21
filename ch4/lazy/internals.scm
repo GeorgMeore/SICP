@@ -1,6 +1,3 @@
-(load "util.scm")
-
-
 ; predicates
 (define (false? x)
   (eq? x 'false))

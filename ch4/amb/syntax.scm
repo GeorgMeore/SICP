@@ -1,6 +1,3 @@
-(load "util.scm")
-
-
 ; <number>
 (define (self-evaluating? exp)
   (or (number? exp) (string? exp)))
