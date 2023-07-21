@@ -1,6 +1,8 @@
 #!/usr/bin/csi -s
 
-(load "simplifier")
+(include "dict.scm")
+(include "syntax.scm")
+(include "simplifier.scm")
 
 ; number representation:
 ; n = 0: ()
