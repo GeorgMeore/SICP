@@ -1,10 +1,12 @@
 #!/usr/bin/csi -s
 
-(load "cp")
+(include "connector.scm")
+(include "constraints.scm")
+(include "operators.scm")
 
 (define (celsius-fahrenheit C F)
-  (c= (c* (cv 9) C)
-      (c* (cv 5) (c- F (cv 32))))
+  (:= (:* (:v 9) C)
+      (:* (:v 5) (:- F (:v 32))))
   'ok)
 
 (define C (make-connector))

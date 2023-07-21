@@ -1,5 +1,3 @@
-(load "connector")
-
 (define (inform-about-value constraint)
   (constraint 'new-value))
 
