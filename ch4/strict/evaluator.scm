@@ -1,6 +1,3 @@
-(load "syntax.scm")
-(load "internals.scm")
-
 (define (evaluate exp env)
   ((analyze exp) env))
 
