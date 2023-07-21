@@ -1,6 +1,3 @@
-(load "agenda")
-(load "primitives")
-
 (define the-agenda (make-agenda))
 
 (define (after-delay delay action)
