@@ -1,3 +1,6 @@
+(define (tagged-list? exp tag)
+  (and (pair? exp) (eq? (car exp) tag)))
+
 ; <number>
 (define (self-evaluating? exp)
   (or (number? exp) (string? exp)))
