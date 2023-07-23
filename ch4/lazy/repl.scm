@@ -1,6 +1,5 @@
 #!/usr/bin/csi -s
 
-(include "util.scm")
 (include "syntax.scm")
 (include "internals.scm")
 (include "evaluator.scm")
