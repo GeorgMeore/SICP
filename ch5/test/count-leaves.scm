@@ -1,8 +1,8 @@
 #!/usr/bin/csi -s
 
-(include "syntax.scm")
-(include "assembler.scm")
-(include "machine.scm")
+(include "../sim/syntax.scm")
+(include "../sim/assembler.scm")
+(include "../sim/machine.scm")
 
 (define count-leaves-a
   (make-machine
