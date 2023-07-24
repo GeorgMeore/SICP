@@ -72,7 +72,7 @@
   (set-car! frame (cons var val)))
 
 (define (get-binding var frame)
-  (cond ((null? frame)
+  (cond ((null? (cdr frame))
           '())
         ((eq? (caar frame) var)
           (car frame))
