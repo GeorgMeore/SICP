@@ -50,7 +50,9 @@
                 (make-error "Zero division error" (car nums))
                 (check (cdr nums))))
           (else (make-error "Not a number" (car nums)))))
-  (check args))
+  (if (null? args)
+      (make-error "Too few arguments supplied")
+      (check args)))
 
 (define (op= . args)
   (define (check nums)
