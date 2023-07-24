@@ -74,7 +74,7 @@
 (define (op-car . args)
   (let ((argc (length args)))
     (if (= argc 1)
-        (if (pair? arg)
+        (if (pair? (car args))
             (make-value (car (car args)))
             (make-error "Not a pair" (car args)))
         (if (> argc 1)
@@ -84,7 +84,7 @@
 (define (op-cdr . args)
   (let ((argc (length args)))
     (if (= argc 1)
-        (if (pair? arg)
+        (if (pair? (car args))
             (make-value (cdr (car args)))
             (make-error "Not a pair" (car args)))
         (if (> argc 1)
@@ -164,7 +164,7 @@
   (set-car! frame (cons var val)))
 
 (define (get-binding var frame)
-  (cond ((null? frame) '())
+  (cond ((null? (cdr frame)) '())
         ((eq? (caar frame) var)
           (car frame))
         (else
