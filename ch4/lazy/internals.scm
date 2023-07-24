@@ -94,40 +94,31 @@
   (cons (make-frame vars vals)
         base-env))
 
-(define (scan-environment var env found not-found scan-all-frames?)
+(define (scan-environment var env found not-found)
   (define (loop env)
     (if (eq? env the-empty-environment)
         (not-found)
         (let ((binding (get-binding var (first-frame env))))
           (if (null? binding)
-              (if scan-all-frames?
-                  (loop (enclosing-environment env))
-                  (not-found))
+              (loop (enclosing-environment env))
               (found binding)))))
   (loop env))
 
 (define (lookup-variable-value var env)
-  (define (found binding)
-    (cdr binding))
-  (define (not-found)
-    (error "Unbound variable" var))
-  (scan-environment var env found not-found #t))
+  (scan-environment var env
+    (lambda (binding) (cdr binding))
+    (lambda () (error "Unbound variable" var))))
 
 (define (set-variable-value! var val env)
-  (define (found binding)
-    (set-cdr! binding val))
-  (define (not-found)
-    (error "Unbound variable" var))
-  (scan-environment var env found not-found #t))
+  (scan-environment var env
+    (lambda (binding) (set-cdr! binding val))
+    (lambda () (error "Unbound variable" var))))
 
 (define (define-variable! var val env)
-  (define (found binding)
-    (set-cdr! binding val))
-  (define (not-found)
-    (add-binding! var val (first-frame env)))
-  (if (eq? env the-empty-environment)
-      (error "Cannot define variable in the empty environment")
-      (scan-environment var env found not-found #f)))
+  (let ((binding (get-binding var (first-frame env))))
+    (if (null? binding)
+        (add-binding! var val (first-frame env))
+        (set-cdr! binding val))))
 
 (define (setup-environment)
   (let ((initial-environment
