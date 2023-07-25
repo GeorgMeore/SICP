@@ -183,10 +183,8 @@
 (define (make-operation exp machine labels ops)
   (let ((op (lookup-op ops (operation-name exp)))
         (aprocs
-          (map (lambda (e)
-                 (if (or (constant? e) (register? e))
-                     (make-primitive e machine labels)
-                     (error "Register or constant expected" e exp)))
+          (map (lambda (op)
+                 (make-primitive op machine labels))
                (operation-operands exp))))
     (lambda ()
       (apply op (map (lambda (p) (p)) aprocs)))))
