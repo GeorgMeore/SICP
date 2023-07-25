@@ -94,7 +94,7 @@
                 (else (error "Unknown register" name)))))
       (define (execute inst)
         (when trace
-          (println (instruction-text inst)))
+          (println "execute: " (instruction-text inst)))
         ((instruction-executor inst)))
       (define (run)
         (let ((insts (get-contents pc)))
