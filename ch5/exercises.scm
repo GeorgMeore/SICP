@@ -177,3 +177,13 @@
    (restore continue)
    (goto (label check-tree))
  exit)
+
+; ex 31
+; (f 'x 'y)
+;   In this case we can skip all of the saves.
+; ((f) 'x 'y)
+;   We need to `env` before evaluating (f).
+; (f (g 'x) y)
+;   We need to save `proc`, `env` and `argl` before evaluating (g 'x).
+; (f (g 'x) 'y)
+;   We need to save `proc` and `argl` before evaluating (g 'x).
