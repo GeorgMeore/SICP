@@ -179,6 +179,7 @@
  exit)
 
 ; ex 31
+; Left-to-right argument evaluation is assumed here
 ; (f 'x 'y)
 ;   In this case we can skip all of the saves.
 ; ((f) 'x 'y)
