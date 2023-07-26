@@ -42,8 +42,9 @@
     (cons 'rest-operands rest-operands)
     (cons 'last-operand? last-operand?)
     ; internals
-    (cons 'error? error?)
-    (cons 'value-object value-object)
+    (cons 'op-failed? op-failed?)
+    (cons 'clear-error! clear-error!)
+    (cons 'set-error! set-error!)
     (cons 'empty-arglist
       (lambda () '()))
     (cons 'adjoin-arg
@@ -110,9 +111,8 @@
     (goto (reg continue))
   ev-variable
     (assign val (op lookup-variable-value) (reg exp) (reg env))
-    (test (op error?) (reg val))
+    (test (op op-failed?))
     (branch (label signal-error))
-    (assign val (op value-object) (reg val))
     (goto (reg continue))
   ev-quoted
     (assign val (op text-of-quotation) (reg exp))
@@ -129,10 +129,10 @@
     (restore continue)
     (restore env)
     (restore unev)
-    (assign val (op set-variable-value!) (reg unev) (reg val) (reg env))
-    (test (op error?) (reg val))
+    (perform (op set-variable-value!) (reg unev) (reg val) (reg env))
+    (test (op op-failed?))
     (branch (label signal-error))
-    (assign val (op value-object) (reg val))
+    (assign val (const ok))
     (goto (reg continue))
   ev-definition
     (assign unev (op definition-variable) (reg exp))
@@ -241,36 +241,31 @@
     (goto (label unknown-procedure-type))
   appl-primitive
     (assign val (op apply-primitive-procedure) (reg proc) (reg argl))
-    (test (op error?) (reg val))
+    (test (op op-failed?))
     (branch (label signal-error))
-    (assign val (op value-object) (reg val))
     (restore continue)
     (goto (reg continue))
   appl-compound
     (assign unev (op procedure-parameters) (reg proc))
     (assign env (op procedure-environment) (reg proc))
     (assign env (op extend-environment) (reg unev) (reg argl) (reg env))
-    (test (op error?) (reg env))
-    (branch (label extend-environment-fail))
-    (assign env (op value-object) (reg env))
+    (test (op op-failed?))
+    (branch (label signal-error))
     (assign unev (op procedure-body) (reg proc))
     (goto (label ev-sequence))
-  extend-environment-fail
-    (assign val (reg env))
-    (goto (label signal-error))
   unknown-expression-type
-    (assign val (const "Unknown expression type"))
+    (perform (op set-error!) (const "Unknown expression type"))
     (goto (label signal-error))
   unknown-procedure-type
     (restore continue)
-    (assign val (const "Unknown procedure type"))
+    (perform (op set-error!) (const "Unknown procedure type"))
     (goto (label signal-error))
   signal-error
-    (perform (op print-error) (reg val))
+    (perform (op print-error))
+    (perform (op clear-error!))
     (goto (label read-eval-print-loop))
   exit
   ))
-
 
 (let ((evaluator (make-machine evaluator-ops evaluator-text)))
   (start evaluator))
