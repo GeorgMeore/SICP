@@ -11,7 +11,7 @@
 
 (define (make-value result)
   (cons 'value result))
-(define (value-object succ)
+(define (unwrap succ)
   (cdr succ))
 
 (define (error? result)
@@ -47,7 +47,7 @@
     (cond ((null? nums) (make-value (apply / args)))
           ((number? (car nums))
             (if (= (car nums) 0)
-                (make-error "Zero division error" (car nums))
+                (make-error "Zero division error")
                 (check (cdr nums))))
           (else (make-error "Not a number" (car nums)))))
   (if (null? args)
@@ -151,11 +151,13 @@
 (define (make-frame vars vals)
   (cond ((and (null? vars) (null? vals))
           '((* *))) ; empty frame
-        ((null? vars) "Too many arguments supplied")
-        ((null? vals) "Too few arguments supplied")
+        ((null? vars)
+          (make-error "Too many arguments supplied"))
+        ((null? vals)
+          (make-error "Too few arguments supplied"))
         (else
           (let ((result (make-frame (cdr vars) (cdr vals))))
-            (if (string? result)
+            (if (error? result)
                 result
                 (cons (cons (car vars) (car vals)) result))))))
 
@@ -180,8 +182,8 @@
 
 (define (extend-environment vars vals base-env)
   (let ((result (make-frame vars vals)))
-    (if (string? result)
-        (make-error result)
+    (if (error? result)
+        result
         (make-value (cons result base-env)))))
 
 (define (scan-environment var env found not-found)
@@ -217,7 +219,7 @@
 
 (define (setup-environment)
   (let ((initial-environment
-         (value-object
+         (unwrap
            (extend-environment (primitive-procedure-names)
                                (primitive-procedure-objects)
                                the-empty-environment))))

@@ -43,7 +43,7 @@
     (cons 'last-operand? last-operand?)
     ; internals
     (cons 'error? error?)
-    (cons 'value-object value-object)
+    (cons 'unwrap unwrap)
     (cons 'empty-arglist
       (lambda () '()))
     (cons 'adjoin-arg
@@ -119,7 +119,7 @@
     (assign val (op lookup-variable-value) (reg exp) (reg env))
     (test (op error?) (reg val))
     (branch (label signal-error))
-    (assign val (op value-object) (reg val))
+    (assign val (op unwrap) (reg val))
     (goto (reg continue))
   ev-quoted
     (assign val (op text-of-quotation) (reg exp))
@@ -139,7 +139,7 @@
     (assign val (op set-variable-value!) (reg unev) (reg val) (reg env))
     (test (op error?) (reg val))
     (branch (label signal-error))
-    (assign val (op value-object) (reg val))
+    (assign val (op unwrap) (reg val))
     (goto (reg continue))
   ev-definition
     (assign unev (op definition-variable) (reg exp))
@@ -234,7 +234,7 @@
     (assign env (op extend-environment) (reg unev) (reg argl) (reg env))
     (test (op error?) (reg env))
     (branch (label extend-environment-fail))
-    (assign env (op value-object) (reg env))
+    (assign env (op unwrap) (reg env))
     (assign unev (op procedure-body) (reg proc))
     (goto (label ev-sequence))
   appl-primitive
@@ -269,7 +269,7 @@
     (assign val (op apply-primitive-procedure) (reg proc) (reg argl))
     (test (op error?) (reg val))
     (branch (label signal-error))
-    (assign val (op value-object) (reg val))
+    (assign val (op unwrap) (reg val))
     (restore continue)
     (goto (reg continue))
   actual-value
