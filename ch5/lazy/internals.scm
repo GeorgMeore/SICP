@@ -141,6 +141,21 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
+(define (op-print . args)
+  (for-each
+    (lambda (arg)
+      (display-object arg))
+    args)
+  (make-value 'ok))
+
+(define (op-println . args)
+  (for-each
+    (lambda (arg)
+      (display-object arg))
+    args)
+  (newline)
+  (make-value 'ok))
+
 (define primitive-procedures
   (list
     (cons '+ op+)
@@ -156,6 +171,8 @@
     (cons 'cdr op-cdr)
     (cons 'null? op-null?)
     (cons 'eq? op-eq?)
+    (cons 'print op-print)
+    (cons 'println op-println)
   ))
 
 (define (primitive-procedure-names)
