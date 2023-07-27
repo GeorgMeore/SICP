@@ -29,6 +29,21 @@
   (cons 'lambda (cons parameters body)))
 
 
+; (let ((<name1> <exp1>)...(<namen> <expn>)) <body>)
+(define (let? exp)
+  (tagged-list? exp 'let))
+(define (let-names exp)
+  (map car (cadr exp)))
+(define (let-exps exp)
+  (map cadr (cadr exp)))
+(define (let-body exp)
+  (cddr exp))
+
+(define (let->combination exp)
+  (cons (make-lambda (let-names exp) (let-body exp))
+        (let-exps exp)))
+
+
 ; (set! <var> <value>)
 (define (assignment? exp)
   (tagged-list? exp 'set!))
@@ -64,6 +79,8 @@
   (if (null? (cdddr exp))
       'false
       (cadddr exp)))
+(define (make-if cond cons alt)
+  (list 'if cond cons alt))
 
 
 ; (begin <actions>...)
@@ -77,6 +94,37 @@
   (car seq))
 (define (rest-exps seq)
   (cdr seq))
+(define (make-begin seq)
+  (cons 'begin seq))
+
+(define (sequence->exp seq)
+  (cond ((null? seq) seq)
+        ((last-exp? seq) (first-exp seq))
+        (else (make-begin seq))))
+
+
+; (cond (<cond1> <seq1>)...(<condn>|else <seqn>))
+(define (cond? exp)
+  (tagged-list? exp 'cond))
+(define (cond-clauses exp)
+  (cdr exp))
+(define (clause-cond clause)
+  (car clause))
+(define (clause-exp clause)
+  (sequence->exp (cdr clause)))
+
+(define (expand-clauses clauses)
+  (cond ((null? clauses)
+          'false)
+        ((eq? (clause-cond (car clauses)) 'else)
+          (clause-exp (car clauses)))
+        (else
+          (make-if (clause-cond (car clauses))
+                   (clause-exp (car clauses))
+                   (expand-clauses (cdr clauses))))))
+
+(define (cond->if exp)
+  (expand-clauses (cond-clauses exp)))
 
 
 ; (<operator> <operands>...)
