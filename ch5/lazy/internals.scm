@@ -141,6 +141,14 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
+(define (op-not . args)
+  (let ((argc (length args)))
+    (if (= argc 1)
+        (make-value (if (eq? (car args) 'false) 'true 'false))
+        (if (> argc 1)
+            (make-error "Too many arguments supplied")
+            (make-error "Too few arguments supplied")))))
+
 (define (op-print . args)
   (for-each
     (lambda (arg)
@@ -166,6 +174,7 @@
     (cons '= op=)
     (cons '> op>)
     (cons '< op<)
+    (cons 'not op-not)
     (cons 'cons op-cons)
     (cons 'car op-car)
     (cons 'cdr op-cdr)
