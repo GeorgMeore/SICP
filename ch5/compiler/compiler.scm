@@ -46,9 +46,9 @@
         value-code
         (make-instruction-sequence '(env val) (list target)
           `((perform (op set-variable-value!)
-                    (const ,var)
-                    (reg val)
-                    (reg env))
+                     (const ,var)
+                     (reg val)
+                     (reg env))
             (assign ,target (const ok))))))))
 
 (define (compile-definition exp target linkage)
@@ -59,9 +59,9 @@
         value-code
         (make-instruction-sequence '(env val) (list target)
           `((perform (op define-value!)
-                    (const ,var)
-                    (reg val)
-                    (reg env))
+                     (const ,var)
+                     (reg val)
+                     (reg env))
             (assign ,target (const ok))))))))
 
 (define (compile-if exp target linkage)
