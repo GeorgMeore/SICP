@@ -44,7 +44,7 @@
     (end-with-linkage linkage
       (preserving '(env)
         value-code
-        (make-instruction-sequence '(env val) `(target)
+        (make-instruction-sequence '(env val) (list target)
           `((perform (op set-variable-value!)
                     (const ,var)
                     (reg val)
