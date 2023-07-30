@@ -12,11 +12,4 @@
 
 (for-each
   print-statement
-  (statements
-    (compile
-      '(def (factorial n)
-        (if (= n 1)
-            1
-            (* (factorial (- n 1)) n)))
-      'val
-      'next)))
+  (statements (compile (read) 'val 'next)))
