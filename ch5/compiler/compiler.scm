@@ -115,7 +115,7 @@
       (make-instruction-sequence '(env proc argl) '(env)
         `(,proc-entry
           (assign env
-                  (op compiled-procedure-env)
+                  (op compiled-procedure-environment)
                   (reg proc))
           (assign env
                   (op extend-environment)
