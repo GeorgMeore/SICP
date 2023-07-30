@@ -188,3 +188,12 @@
 ;   We need to save `proc`, `env` and `argl` before evaluating (g 'x).
 ; (f (g 'x) 'y)
 ;   We need to save `proc` and `argl` before evaluating (g 'x).
+
+; ex 33
+;   The first program first evaluates `n` and then evaluates `(factorial (- n 1))`.
+; It needs to save `argl` before evaluating `(factorial (- n 1))`.
+; But on the other hand it can skip saving `env` before evaluating `n`.
+;   The second program first evaluates `(factorial-alt (- n 1))` and only then evaluates `n`.
+; It needs to save `env` before evaluating `(factorial-alt (- n 1))`, but it need not save `argl`.
+;   Thus the difference is that the first variant does a save/restore on `env` and
+; the second does on `argl`. The total amount of operations is the same.
