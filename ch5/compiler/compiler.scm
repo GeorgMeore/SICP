@@ -180,11 +180,12 @@
             (compile-procedure-application target compiled-linkage))
           (append-instruction-sequences
             primitive-branch
-            (make-instruction-sequence '(proc argl) (list target)
-              `((assign ,target
-                        (op apply-primitive-procedure)
-                        (reg proc)
-                        (reg argl))))))
+            (end-with-linkage linkage
+              (make-instruction-sequence '(proc argl) (list target)
+                `((assign ,target
+                          (op apply-primitive-procedure)
+                          (reg proc)
+                          (reg argl)))))))
         after-call))))
 
 (define (compile-procedure-application target linkage)
