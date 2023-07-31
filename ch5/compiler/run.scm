@@ -10,6 +10,12 @@
   (display stmt)
   (newline))
 
-(for-each
-  print-statement
-  (statements (compile (read) 'val 'next)))
+(define (compile-loop)
+  (let ((input (read)))
+    (if (eof-object? input)
+        'done
+        (let ((stmts (statements (compile input 'val 'next))))
+          (for-each print-statement stmts)
+          (compile-loop)))))
+
+(compile-loop)
