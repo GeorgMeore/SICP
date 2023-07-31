@@ -58,7 +58,7 @@
       (preserving '(env)
         value-code
         (make-instruction-sequence '(env val) (list target)
-          `((perform (op define-value!)
+          `((perform (op define-variable!)
                      (const ,var)
                      (reg val)
                      (reg env))
