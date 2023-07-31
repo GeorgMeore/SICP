@@ -63,7 +63,6 @@
     (cons 'compound-procedure? compound-procedure?)
     (cons 'make-procedure make-procedure)
     (cons 'procedure-parameters procedure-parameters)
-    (cons 'procedure-parameters procedure-parameters)
     (cons 'procedure-environment procedure-environment)
     (cons 'procedure-body procedure-body)
     (cons 'extend-environment extend-environment)
