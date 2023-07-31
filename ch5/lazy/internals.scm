@@ -18,7 +18,7 @@
   (tagged-list? result 'error))
 
 
-(define (op+ . args)
+(define (proc+ . args)
   (define (check nums)
     (cond ((null? nums) (make-value (apply + args)))
           ((number? (car nums))
@@ -26,7 +26,7 @@
           (else (make-error "Not a number" (car nums)))))
   (check args))
 
-(define (op- . args)
+(define (proc- . args)
   (define (check nums)
     (cond ((null? nums) (make-value (apply - args)))
           ((number? (car nums))
@@ -34,7 +34,7 @@
           (else (make-error "Not a number" (car nums)))))
   (check args))
 
-(define (op* . args)
+(define (proc* . args)
   (define (check nums)
     (cond ((null? nums) (make-value (apply * args)))
           ((number? (car nums))
@@ -42,7 +42,7 @@
           (else (make-error "Not a number" (car nums)))))
   (check args))
 
-(define (op/ . args)
+(define (proc/ . args)
   (define (check nums)
     (cond ((null? nums) (make-value (apply / args)))
           ((number? (car nums))
@@ -54,7 +54,7 @@
       (make-error "Too few arguments supplied")
       (check args)))
 
-(define (op-mod . args)
+(define (proc-mod . args)
   (let ((argc (length args)))
     (if (= argc 2)
         (let ((first (car args)) (second (cadr args)))
@@ -70,7 +70,7 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
-(define (op= . args)
+(define (proc= . args)
   (define (check nums)
     (cond ((null? nums)
             (make-value (if (apply = args) 'true 'false)))
@@ -79,7 +79,7 @@
           (else (make-error "Not a number" (car nums)))))
   (check args))
 
-(define (op> . args)
+(define (proc> . args)
   (define (check nums)
     (cond ((null? nums)
             (make-value (if (apply > args) 'true 'false)))
@@ -88,7 +88,7 @@
           (else (make-error "Not a number" (car nums)))))
   (check args))
 
-(define (op< . args)
+(define (proc< . args)
   (define (check nums)
     (cond ((null? nums)
             (make-value (if (apply < args) 'true 'false)))
@@ -97,7 +97,7 @@
           (else (make-error "Not a number" (car nums)))))
   (check args))
 
-(define (op-cons . args)
+(define (proc-cons . args)
   (let ((argc (length args)))
     (if (= argc 2)
         (make-value (cons (car args) (cadr args)))
@@ -105,7 +105,7 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
-(define (op-car . args)
+(define (proc-car . args)
   (let ((argc (length args)))
     (if (= argc 1)
         (if (pair? (car args))
@@ -115,7 +115,7 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
-(define (op-cdr . args)
+(define (proc-cdr . args)
   (let ((argc (length args)))
     (if (= argc 1)
         (if (pair? (car args))
@@ -125,7 +125,7 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
-(define (op-null? . args)
+(define (proc-null? . args)
   (let ((argc (length args)))
     (if (= argc 1)
         (make-value (if (null? (car args)) 'true 'false))
@@ -133,7 +133,7 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
-(define (op-eq? . args)
+(define (proc-eq? . args)
   (let ((argc (length args)))
     (if (= argc 2)
         (make-value (if (eq? (car args) (cadr args)) 'true 'false))
@@ -141,7 +141,7 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
-(define (op-not . args)
+(define (proc-not . args)
   (let ((argc (length args)))
     (if (= argc 1)
         (make-value (if (eq? (car args) 'false) 'true 'false))
@@ -149,14 +149,14 @@
             (make-error "Too many arguments supplied")
             (make-error "Too few arguments supplied")))))
 
-(define (op-print . args)
+(define (proc-print . args)
   (for-each
     (lambda (arg)
       (display-object arg))
     args)
   (make-value 'ok))
 
-(define (op-println . args)
+(define (proc-println . args)
   (for-each
     (lambda (arg)
       (display-object arg))
@@ -166,22 +166,22 @@
 
 (define primitive-procedures
   (list
-    (cons '+ op+)
-    (cons '- op-)
-    (cons '* op*)
-    (cons '/ op/)
-    (cons 'mod op-mod)
-    (cons '= op=)
-    (cons '> op>)
-    (cons '< op<)
-    (cons 'not op-not)
-    (cons 'cons op-cons)
-    (cons 'car op-car)
-    (cons 'cdr op-cdr)
-    (cons 'null? op-null?)
-    (cons 'eq? op-eq?)
-    (cons 'print op-print)
-    (cons 'println op-println)
+    (cons '+ proc+)
+    (cons '- proc-)
+    (cons '* proc*)
+    (cons '/ proc/)
+    (cons 'mod proc-mod)
+    (cons '= proc=)
+    (cons '> proc>)
+    (cons '< proc<)
+    (cons 'not proc-not)
+    (cons 'cons proc-cons)
+    (cons 'car proc-car)
+    (cons 'cdr proc-cdr)
+    (cons 'null? proc-null?)
+    (cons 'eq? proc-eq?)
+    (cons 'print proc-print)
+    (cons 'println proc-println)
   ))
 
 (define (primitive-procedure-names)
