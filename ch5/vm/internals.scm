@@ -250,6 +250,16 @@
     (lambda ()
       (error "Unbound variable" var))))
 
+(define (lexical-address-lookup addr env)
+  (let ((env-index (car addr)) (frame-index (cadr addr)))
+    (let ((binding (list-ref (list-ref env env-index) frame-index)))
+      (cdr binding))))
+
+(define (lexical-address-set! addr val env)
+  (let ((env-index (car addr)) (frame-index (cadr addr)))
+    (let ((binding (list-ref (list-ref env env-index) frame-index)))
+      (set-cdr! binding val))))
+
 (define (define-variable! var val env)
   (let ((binding (get-binding var (first-frame env))))
     (if (null? binding)

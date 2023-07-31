@@ -12,7 +12,7 @@
   (list
     (cons 'list list)
     (cons 'cons
-      ; need to wrap in a lambda because of some bug in the chicken compiler
+      ; need to wrap `cons` in a lambda because of some bug in the chicken compiler
       (lambda (x y) (cons x y)))
     (cons 'empty-arglist
       (lambda () '()))
@@ -22,6 +22,8 @@
       (lambda () the-global-environment))
     (cons 'lookup-variable-value lookup-variable-value)
     (cons 'set-variable-value! set-variable-value!)
+    (cons 'lexical-address-lookup lexical-address-lookup)
+    (cons 'lexical-address-set! lexical-address-set!)
     (cons 'define-variable! define-variable!)
     (cons 'false? false?)
     (cons 'primitive-procedure? primitive-procedure?)
