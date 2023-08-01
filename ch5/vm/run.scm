@@ -14,10 +14,6 @@
     (cons 'cons
       ; need to wrap `cons` in a lambda because of some bug in the chicken compiler
       (lambda (x y) (cons x y)))
-    (cons 'empty-arglist
-      (lambda () '()))
-    (cons 'adjoin-arg
-      (lambda (arg arglist) (append arglist (list arg))))
     (cons 'get-global-environment
       (lambda () the-global-environment))
     (cons 'lookup-variable-value lookup-variable-value)
