@@ -215,8 +215,7 @@
         (else
           (get-binding var (cdr frame)))))
 
-(define the-empty-environment
-  '())
+(define the-empty-environment '())
 
 (define (first-frame env)
   (car env))
@@ -226,29 +225,17 @@
 (define (extend-environment vars vals base-env)
   (cons (make-frame vars vals) base-env))
 
-(define (scan-environment var env found not-found)
-  (define (loop env)
-    (if (eq? env the-empty-environment)
-        (not-found)
-        (let ((binding (get-binding var (first-frame env))))
-          (if (null? binding)
-              (loop (enclosing-environment env))
-              (found binding)))))
-  (loop env))
+(define (lookup-variable-value var global-env)
+  (let ((binding (get-binding var (first-frame global-env))))
+    (if (null? binding)
+        (error "Unbound variable" var)
+        (cdr binding))))
 
-(define (lookup-variable-value var env)
-  (scan-environment var env
-    (lambda (binding)
-      (cdr binding))
-    (lambda ()
-      (error "Unbound variable" var))))
-
-(define (set-variable-value! var val env)
-  (scan-environment var env
-    (lambda (binding)
-      (set-cdr! binding val))
-    (lambda ()
-      (error "Unbound variable" var))))
+(define (set-variable-value! var val global-env)
+  (let ((binding (get-binding var (first-frame global-env))))
+    (if (null? binding)
+        (error "Unbound variable" var)
+        (set-cdr! binding val))))
 
 (define (lexical-address-lookup addr env)
   (let ((env-index (car addr)) (frame-index (cadr addr)))
