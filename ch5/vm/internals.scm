@@ -279,5 +279,5 @@
 
 (define (display-object obj)
   (if (compiled-procedure? obj)
-    (display (list 'procedure (procedure-parameters obj)))
+    (display (list 'procedure))
     (display obj)))
