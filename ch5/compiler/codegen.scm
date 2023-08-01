@@ -16,13 +16,23 @@
   (iter cenv 0))
 
 
-(define (compile-toplevel exp)
+(define (compile-toplevel seq)
   (append-instruction-sequences
     (make-instruction-sequence '() '(env)
       `((assign env (op get-global-environment))))
-    (if (definition? exp)
-        (compile-definition exp 'val 'next '())
-        (compile exp 'val 'next '()))))
+    (compile-toplevel-sequence seq)))
+
+(define (compile-toplevel-sequence seq)
+  (let ((first (first-exp seq)))
+    (let ((first-exp-code
+           (if (definition? first)
+               (compile-definition first 'val 'next)
+               (compile first 'val 'next '()))))
+      (if (last-exp? seq)
+          first-exp-code
+          (preserving '(env)
+            first-exp-code
+            (compile-toplevel-sequence (rest-exps seq)))))))
 
 (define (compile exp target linkage cenv)
   (cond ((self-evaluating? exp)
@@ -94,9 +104,9 @@
                            (reg env))
                   (assign ,target (const ok))))))))))
 
-(define (compile-definition exp target linkage cenv)
+(define (compile-definition exp target linkage)
   (let ((var (definition-variable exp))
-        (value-code (compile (definition-value exp) 'val 'next cenv)))
+        (value-code (compile (definition-value exp) 'val 'next '())))
     (end-with-linkage linkage
       (preserving '(env)
         value-code
