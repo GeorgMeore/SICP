@@ -5,11 +5,9 @@
 (define (self-evaluating? exp)
   (or (number? exp) (string? exp)))
 
-
 ; <symbol>
 (define (variable? exp)
   (symbol? exp))
-
 
 ; (quote <text>)
 (define (quoted? exp)
@@ -17,17 +15,33 @@
 (define (text-of-quotation exp)
   (cadr exp))
 
-
 ; (lambda (<params>...) <body>)
 (define (lambda? exp)
   (tagged-list? exp 'lambda))
 (define (lambda-parameters exp)
   (cadr exp))
 (define (lambda-body exp)
-  (cddr exp))
+  (scan-out-defines (cddr exp)))
 (define (make-lambda parameters body)
   (cons 'lambda (cons parameters body)))
 
+(define (scan-out-defines seq)
+  (define (iter exps vars args body)
+    (if (null? exps)
+        (if (null? vars)
+            seq
+            (list (cons (make-lambda (reverse vars) (reverse body)) args)))
+        (let ((first (first-exp exps))
+              (rest (rest-exps exps)))
+          (if (definition? first)
+              (let ((var (definition-variable first))
+                    (val (definition-value first)))
+                (iter rest
+                      (cons var vars)
+                      (cons ''*unassigned* args)
+                      (cons (make-assignment var val) body)))
+              (iter rest vars args (cons first body))))))
+  (iter seq '() '() '()))
 
 ; (set! <var> <value>)
 (define (assignment? exp)
@@ -36,7 +50,8 @@
   (cadr exp))
 (define (assignment-value exp)
   (caddr exp))
-
+(define (make-assignment var val)
+  (list 'set! var val))
 
 ; (def <var> <value>)
 ; (def (<var> <params>...) <body>)
@@ -51,7 +66,6 @@
       (caddr exp)
       (make-lambda (cdadr exp) (cddr exp))))
 
-
 ; (if <pred> <cons>)
 ; (if <pred> <cons> <alt>)
 (define (if? exp)
@@ -65,7 +79,6 @@
       'false
       (cadddr exp)))
 
-
 ; (begin <actions>...)
 (define (begin? exp)
   (tagged-list? exp 'begin))
@@ -77,7 +90,6 @@
   (car seq))
 (define (rest-exps seq)
   (cdr seq))
-
 
 ; (<operator> <operands>...)
 (define (application? exp)
