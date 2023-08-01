@@ -8,7 +8,7 @@
 (define (find-variable var cenv)
   (define (iter cenv env-index)
     (if (null? cenv)
-        'not-found
+        'global
         (let ((frame-index (list-find var (car cenv))))
           (if frame-index
               (list env-index frame-index)
@@ -59,9 +59,10 @@
 (define (compile-variable exp target linkage cenv)
   (let ((addr (find-variable exp cenv)))
     (end-with-linkage linkage
-      (if (eq? addr 'not-found)
-          (make-instruction-sequence '(env) (list target)
-            `((assign ,target
+      (if (eq? addr 'global)
+          (make-instruction-sequence '() (list target 'env)
+            `((assign env (op get-global-environment))
+              (assign ,target
                       (op lookup-variable-value)
                       (const ,exp)
                       (reg env))))
@@ -78,9 +79,10 @@
       (preserving '(env)
         value-code
         (let ((addr (find-variable var cenv)))
-          (if (eq? addr 'not-found)
-              (make-instruction-sequence '(env val) (list target)
-                `((perform (op set-variable-value!)
+          (if (eq? addr 'global)
+              (make-instruction-sequence '(val) (list target 'env)
+                `((assign env (op get-global-environment))
+                  (perform (op set-variable-value!)
                            (const ,var)
                            (reg val)
                            (reg env))
