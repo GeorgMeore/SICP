@@ -4,18 +4,20 @@
 (include "instructions.scm")
 (include "codegen.scm")
 
-(define (print-statement stmt)
+(define (write-statement stmt)
   (when (pair? stmt)
     (display "  "))
-  (display stmt)
+  (write stmt)
   (newline))
 
-(define (compile-loop)
-  (let ((exp (read)))
-    (if (eof-object? exp)
-        'done
-        (let ((stmts (statements (compile-toplevel exp))))
-          (for-each print-statement stmts)
-          (compile-loop)))))
+(define (read-text)
+  (let ((inst (read)))
+    (if (eof-object? inst)
+        '()
+        (cons inst (read-text)))))
 
-(compile-loop)
+(let ((text (read-text)))
+  (if (not (null? text))
+      (for-each
+        write-statement
+        (statements (compile-toplevel text)))))
