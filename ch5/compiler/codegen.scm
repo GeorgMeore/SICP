@@ -16,6 +16,14 @@
   (iter cenv 0))
 
 
+(define (compile-toplevel exp)
+  (append-instruction-sequences
+    (make-instruction-sequence '() '(env)
+      `((assign env (op get-global-environment))))
+    (if (definition? exp)
+        (compile-definition exp 'val 'next '())
+        (compile exp 'val 'next '()))))
+
 (define (compile exp target linkage cenv)
   (cond ((self-evaluating? exp)
           (compile-self-evaluating exp target linkage))
@@ -26,7 +34,7 @@
         ((assignment? exp)
           (compile-assignment exp target linkage cenv))
         ((definition? exp)
-          (compile-definition exp target linkage cenv))
+          (error "Non-toplevel definition" exp))
         ((if? exp)
           (compile-if exp target linkage cenv))
         ((lambda? exp)

@@ -30,7 +30,8 @@
     (if (null? exps)
         (if (null? vars)
             seq
-            (list (cons (make-lambda (reverse vars) (reverse body)) args)))
+            (let ((body-lambda (make-lambda (reverse vars) (reverse body))))
+              (list (cons body-lambda args))))
         (let ((first (first-exp exps))
               (rest (rest-exps exps)))
           (if (definition? first)
