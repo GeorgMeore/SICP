@@ -28,7 +28,7 @@
 (define (compile-quoted exp target linkage)
   (end-with-linkage linkage
     (make-instruction-sequence '() (list target)
-      `((assign ,target ,(text-of-quotation exp))))))
+      `((assign ,target (const ,(text-of-quotation exp)))))))
 
 (define (compile-variable exp target linkage)
   (end-with-linkage linkage
