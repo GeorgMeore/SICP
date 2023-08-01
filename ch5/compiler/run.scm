@@ -14,7 +14,7 @@
   (let ((input (read)))
     (if (eof-object? input)
         'done
-        (let ((stmts (statements (compile input 'val 'next))))
+        (let ((stmts (statements (compile input 'val 'next '()))))
           (for-each print-statement stmts)
           (compile-loop)))))
 
