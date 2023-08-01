@@ -11,10 +11,10 @@
   (newline))
 
 (define (compile-loop)
-  (let ((input (read)))
-    (if (eof-object? input)
+  (let ((exp (read)))
+    (if (eof-object? exp)
         'done
-        (let ((stmts (statements (compile input 'val 'next '()))))
+        (let ((stmts (statements (compile-toplevel exp))))
           (for-each print-statement stmts)
           (compile-loop)))))
 
