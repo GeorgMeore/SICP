@@ -5,7 +5,6 @@
 (include "../sim/machine.scm")
 (include "internals.scm")
 
-
 (define the-global-environment (setup-environment))
 
 (define evaluator-ops
@@ -38,5 +37,4 @@
         (cons inst (read-text)))))
 
 (let ((evaluator (make-machine evaluator-ops (read-text))))
-  (set-register-contents! evaluator 'env the-global-environment)
   (start evaluator))
