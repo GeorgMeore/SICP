@@ -2,7 +2,7 @@
 
 (include "syntax.scm")
 (include "instructions.scm")
-(include "compiler.scm")
+(include "codegen.scm")
 
 (define (print-statement stmt)
   (when (pair? stmt)
