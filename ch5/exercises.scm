@@ -183,7 +183,7 @@
 ; (f 'x 'y)
 ;   In this case we can skip all of the saves.
 ; ((f) 'x 'y)
-;   We need to `env` before evaluating (f).
+;   In this case we can skip all of the saves.
 ; (f (g 'x) y)
 ;   We need to save `proc`, `env` and `argl` before evaluating (g 'x).
 ; (f (g 'x) 'y)
