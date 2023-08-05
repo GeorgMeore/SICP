@@ -293,9 +293,15 @@
 
 
 (define (display-object obj)
-  (if (compound-procedure? obj)
-    (display (list 'procedure (procedure-parameters obj)))
-    (display obj)))
+  (define (scan obj)
+    (cond ((compound-procedure? obj)
+            '<procedure>)
+          ((primitive-procedure? obj)
+            '<primitive>)
+          ((pair? obj)
+            (cons (scan (car obj)) (scan (cdr obj))))
+          (else obj)))
+  (display (scan obj)))
 
 (define (print-object obj)
   (display-object obj)
