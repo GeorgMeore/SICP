@@ -270,6 +270,12 @@
 
 
 (define (display-object obj)
-  (if (compiled-procedure? obj)
-    (display (list 'procedure))
-    (display obj)))
+  (define (scan obj)
+    (cond ((compiled-procedure? obj)
+            '<procedure>)
+          ((primitive-procedure? obj)
+            '<primitive>)
+          ((pair? obj)
+            (cons (scan (car obj)) (scan (cdr obj))))
+          (else obj)))
+  (display (scan obj)))
