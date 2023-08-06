@@ -192,6 +192,11 @@
 (define (compiled-procedure-environment proc)
   (caddr proc))
 
+(define (assert-procedure obj)
+  (or (primitive-procedure? obj)
+      (compiled-procedure? obj)
+      (error "Not a procedure" obj)))
+
 
 (define (make-frame vars vals)
   (cond ((and (null? vars) (null? vals))

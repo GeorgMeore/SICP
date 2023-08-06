@@ -21,6 +21,7 @@
     (cons 'lexical-address-set! lexical-address-set!)
     (cons 'define-variable! define-variable!)
     (cons 'false? false?)
+    (cons 'assert-procedure assert-procedure)
     (cons 'primitive-procedure? primitive-procedure?)
     (cons 'apply-primitive-procedure apply-primitive-procedure)
     (cons 'compiled-procedure? compiled-procedure?)
